@@ -36,14 +36,23 @@ namespace HexProcessor
             {
                 HexChunk hc = new HexChunk();
                 hc.SetType(typeString);
-                hc.processChunk(String.Concat(bytes.SubArray(0, hc.Size)), Endianness.LITTLE);
+                int chunkSize = hc.Size;
+                hc.processChunk(bytes.SubArray(0, chunkSize), Endianness.BIG);
+                bytes = bytes.SubArray(chunkSize, bytes.Length - chunkSize - 1);
                 chunkList.Add(hc);
             }
         }
 
-        public string GetResult()
+        public List<string> GetResult()
         {
-            return String.Concat(chunkList);
+            List<string> result = new List<string>();
+
+            foreach(HexChunk hc in chunkList)
+            {
+                result.Add(hc.ToString());
+            }
+
+            return result;
         }
     }
 }

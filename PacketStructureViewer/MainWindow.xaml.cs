@@ -33,7 +33,11 @@ namespace PacketStructureViewer
             list.Add("int16");
             list.Add("int32");
             processor.ProcessString(hexBox.Text, list);
-            resultBox.Items.Add(processor.GetResult());
+
+            resultBox.Items.Clear();
+            List<string> resultList = processor.GetResult();
+            foreach(string resString in resultList)
+                resultBox.Items.Add(resString);
         }
     }
 }
