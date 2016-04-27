@@ -21,23 +21,50 @@ namespace PacketStructureViewer
     /// </summary>
     public partial class MainWindow : Window
     {
+        public class DisplayedChunk
+        {
+            public string Type { get; set; }
+            public string Value { get; set; }
+            public string Hex { get; set; }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            var gridView = new GridView();
+            this.listView.View = gridView;
+            gridView.Columns.Add(new GridViewColumn
+            {
+                Header = "Type",
+                DisplayMemberBinding = new Binding("Type")
+            });
+            gridView.Columns.Add(new GridViewColumn
+            {
+                Header = "Value",
+                DisplayMemberBinding = new Binding("Value")
+            });
+            gridView.Columns.Add(new GridViewColumn
+            {
+                Header = "Hex",
+                DisplayMemberBinding = new Binding("Hex")
+            });
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
             Processor processor = new Processor();
             List<string> list = new List<string>();
-            list.Add("int16");
-            list.Add("int32");
+            list = typeList.Text.Split(' ').ToList<string>();
             processor.ProcessString(hexBox.Text, list);
-
-            resultBox.Items.Clear();
-            List<string> resultList = processor.GetResult();
-            foreach(string resString in resultList)
-                resultBox.Items.Add(resString);
+            
+            listView.Items.Clear();
+            List<HexChunk> resultList = processor.GetResult();
+            foreach(HexChunk chunk in resultList)
+                this.listView.Items.Add(new DisplayedChunk {
+                    Type = chunk.CastTypeString,
+                    Value = chunk.ToString(),
+                    Hex = chunk.HexString
+                });
         }
     }
 }

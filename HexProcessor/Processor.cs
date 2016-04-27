@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace HexProcessor
 {
-    enum CastType
+    public enum CastType
     {
         INT16,
         INT32,
         INT64
     }
 
-    enum Endianness
+    public enum Endianness
     {
         BIG,
         LITTLE
@@ -43,16 +43,9 @@ namespace HexProcessor
             }
         }
 
-        public List<string> GetResult()
+        public List<HexChunk> GetResult()
         {
-            List<string> result = new List<string>();
-
-            foreach(HexChunk hc in chunkList)
-            {
-                result.Add(hc.ToString());
-            }
-
-            return result;
+            return chunkList;
         }
     }
 }

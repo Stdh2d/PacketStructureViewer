@@ -7,10 +7,20 @@ using System.Globalization;
 
 namespace HexProcessor
 {
-    class HexChunk
+    public class HexChunk
     {
         private CastType castType;
+        public string CastTypeString
+        {
+            get { return castType.ToString(); }
+        }
+
         private string hexString;
+        public string HexString
+        {
+            get { return hexString; }
+        }
+
         private string[] hexArray;
 
         public int Size
@@ -97,7 +107,7 @@ namespace HexProcessor
 
         public override string ToString()
         {
-            string res = castType.ToString() + " " + String.Join(" ", hexArray) + " ";
+            string res = "";
             try
             {
                 switch (castType)
