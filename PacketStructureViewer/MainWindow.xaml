@@ -7,17 +7,23 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <TextBox x:Name="hexBox" HorizontalAlignment="Left" Height="273" Margin="10,10,0,0" TextWrapping="Wrap" Text="0000 0005 0000 0000 0005 B8C2 B8C2 B8C2 B8C2" VerticalAlignment="Top" Width="142"/>
-        <Button x:Name="refreshButton" HorizontalAlignment="Left" Margin="10,288,0,0" VerticalAlignment="Top" Width="142">
-            <Button x:Name="button" Content="Button" Width="75" Click="button_Click"/>
+        <TextBox x:Name="hexBox" HorizontalAlignment="Left" Margin="10,10,0,40" TextWrapping="Wrap" Text="0000 0005 0000 0000 0005 B8C2 B8C2 B8C2 B8C2" Width="142" VerticalContentAlignment="Stretch" Padding="0,0,0,-3"/>
+        <Button x:Name="refreshButton" HorizontalAlignment="Left" Margin="72,0,0,7" Width="80" Height="21" HorizontalContentAlignment="Center" VerticalAlignment="Bottom">
+            <Button x:Name="Process" Content="Process" Width="75" Click="button_Click"/>
         </Button>
-        <ListView x:Name="listView" HorizontalAlignment="Left" Height="299" Margin="229,10,0,0" VerticalAlignment="Top" Width="278">
+        <ListView x:Name="listView" Margin="266,10,7,7" Padding="0">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBox x:Name="typeList" HorizontalAlignment="Left" Height="273" Margin="165,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="157,10,0,7" Width="104" AutoGenerateColumns="False" FrozenColumnCount="2" SelectionMode="Single" SelectionUnit="Cell" MinRowHeight="6">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Type}" />
+                <DataGridTextColumn Header="Birthday" Binding="{Binding Length}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button x:Name="button" Content="Endian" Margin="10,0,0,7" Width="57" Click="button_SwitchEndian" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="21" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>

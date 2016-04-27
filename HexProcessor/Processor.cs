@@ -8,15 +8,25 @@ namespace HexProcessor
 {
     public enum CastType
     {
+        BYTE,
         INT16,
         INT32,
-        INT64
+        INT64,
+        STRING_ASCII,
+        STRING_UNICODE,
+        BYTE_ARRAY
     }
 
     public enum Endianness
     {
         BIG,
         LITTLE
+    }
+
+    public class DisplayedType
+    {
+        public string Type { get; set; }
+        public int Length { get; set; }
     }
 
     public class Processor
@@ -27,18 +37,32 @@ namespace HexProcessor
         {
             chunkList = new List<HexChunk>();
         }
+        
+        static string[] SwapByteEndianness(string[] bytes)
+        {
+            for (int i = 0; i < bytes.Length - 1; i += 2)
+            {
+                string swap = bytes[i];
+                bytes[i] = bytes[i + 1];
+                bytes[i + 1] = swap;
+            }
+            return bytes;
+        }
 
-        public void ProcessString(string s, List<string> typeList)
+        public void ProcessString(string s, List<DisplayedType> typeList, Endianness endian)
         {
             string[] bytes = s.Split(' ');
 
-            foreach(string typeString in typeList)
+            if (endian == Endianness.LITTLE)
+                SwapByteEndianness(bytes);
+
+            foreach (DisplayedType dt in typeList)
             {
                 HexChunk hc = new HexChunk();
-                hc.SetType(typeString);
+                hc.SetType(dt.Type, dt.Length);
                 int chunkSize = hc.Size;
-                hc.processChunk(bytes.SubArray(0, chunkSize), Endianness.BIG);
-                bytes = bytes.SubArray(chunkSize, bytes.Length - chunkSize - 1);
+                hc.processChunk(bytes.SubArray(0, chunkSize));
+                bytes = bytes.SubArray(chunkSize, bytes.Length - chunkSize);
                 chunkList.Add(hc);
             }
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Globalization;
 
 namespace HexProcessor
 {
@@ -18,10 +17,11 @@ namespace HexProcessor
         private string hexString;
         public string HexString
         {
-            get { return hexString; }
+            get { return String.Join(" ", hexArray); }
         }
 
         private string[] hexArray;
+        private int length;
 
         public int Size
         {
@@ -31,53 +31,40 @@ namespace HexProcessor
             }
         }
 
-        static int ByteSizeOfType(CastType type)
+        int ByteSizeOfType(CastType type)
         {
             switch (type)
             {
+                case CastType.BYTE:
+                    return 1;
                 case CastType.INT16:
                     return 2;
                 case CastType.INT32:
                     return 4;
+                case CastType.BYTE_ARRAY:
+                case CastType.STRING_ASCII:
+                case CastType.STRING_UNICODE:
+                    return length;
                 case CastType.INT64:
                 default:
                     return 8;
             }
         }
 
-        static string SwapByteEndianness(string hexChain)
+        public void processChunk(string[] hexChain)
         {
-            string s = "";
-            s += hexChain[2];
-            s += hexChain[3];
-            s += hexChain[0];
-            s += hexChain[1];
-            return s;
-        }
-
-        public void processChunk(string[] hexChain, Endianness endianness)
-        {
-            if(endianness == Endianness.LITTLE)
-            {
-                try
-                {
-                    for (int i = 0; i < hexChain.Length; ++i)
-                        hexChain[i] = SwapByteEndianness(hexChain[i]);
-                }
-                catch
-                {
-                    hexString = "";
-                    return;
-                }
-            }
             hexArray = hexChain;
             hexString = String.Concat(hexChain);
         }
 
-        public void SetType(string type)
+        public void SetType(string type, int length = 0)
         {
-            switch(type)
+            this.length = length;
+            switch (type)
             {
+                case "byte":
+                    castType = CastType.BYTE;
+                    break;
                 case "int16":
                     castType = CastType.INT16;
                     break;
@@ -87,22 +74,16 @@ namespace HexProcessor
                 case "int64":
                     castType = CastType.INT64;
                     break;
+                case "string_unicode":
+                    castType = CastType.STRING_UNICODE;
+                    break;
+                case "string_ascii":
+                    castType = CastType.STRING_ASCII;
+                    break;
+                case "byte_array":
+                    castType = CastType.BYTE_ARRAY;
+                    break;
             }
-        }
-
-        public int getInt16()
-        {
-            return Int16.Parse(hexString, NumberStyles.HexNumber);
-        }
-
-        public int getInt32()
-        {
-            return Int32.Parse(hexString, NumberStyles.HexNumber);
-        }
-
-        public long getInt64()
-        {
-            return Int64.Parse(hexString, NumberStyles.HexNumber);
         }
 
         public override string ToString()
@@ -112,14 +93,26 @@ namespace HexProcessor
             {
                 switch (castType)
                 {
+                    case CastType.BYTE:
+                        res += HexConverter.GetByte(hexString).ToString();
+                        break;
                     case CastType.INT16:
-                        res += getInt16().ToString();
+                        res += HexConverter.GetInt16(hexString).ToString();
                         break;
                     case CastType.INT32:
-                        res += getInt32().ToString();
+                        res += HexConverter.GetInt32(hexString).ToString();
                         break;
                     case CastType.INT64:
-                        res += getInt64().ToString();
+                        res += HexConverter.GetInt64(hexString).ToString();
+                        break;
+                    case CastType.STRING_ASCII:
+                        res += HexConverter.GetStringASCII(hexString);
+                        break;
+                    case CastType.STRING_UNICODE:
+                        res += HexConverter.GetStringUNICODE(hexString);
+                        break;
+                    case CastType.BYTE_ARRAY:
+                        res += HexConverter.GetByteArray(hexString);
                         break;
                 }
             }
