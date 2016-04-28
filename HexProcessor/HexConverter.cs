@@ -10,6 +10,17 @@ namespace HexProcessor
     class HexConverter
     {
 
+        public static string[] SwapByteEndianness(string[] bytes)
+        {
+            for (int i = 0; i < bytes.Length - 1; i += 2)
+            {
+                string swap = bytes[i];
+                bytes[i] = bytes[i + 1];
+                bytes[i + 1] = swap;
+            }
+            return bytes;
+        }
+
         public static short GetInt16(string s)
         {
             return Int16.Parse(s, NumberStyles.HexNumber);

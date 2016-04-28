@@ -14,7 +14,8 @@ namespace HexProcessor
         INT64,
         STRING_ASCII,
         STRING_UNICODE,
-        BYTE_ARRAY
+        BYTE_ARRAY,
+        NOP
     }
 
     public enum Endianness
@@ -37,24 +38,10 @@ namespace HexProcessor
         {
             chunkList = new List<HexChunk>();
         }
-        
-        static string[] SwapByteEndianness(string[] bytes)
-        {
-            for (int i = 0; i < bytes.Length - 1; i += 2)
-            {
-                string swap = bytes[i];
-                bytes[i] = bytes[i + 1];
-                bytes[i + 1] = swap;
-            }
-            return bytes;
-        }
 
-        public void ProcessString(string s, List<DisplayedType> typeList, Endianness endian)
+        public void ProcessString(string s, List<DisplayedType> typeList)
         {
             string[] bytes = s.Split(' ');
-
-            if (endian == Endianness.LITTLE)
-                SwapByteEndianness(bytes);
 
             foreach (DisplayedType dt in typeList)
             {

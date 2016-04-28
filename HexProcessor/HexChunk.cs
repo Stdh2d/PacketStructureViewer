@@ -54,8 +54,10 @@ namespace HexProcessor
                 case CastType.STRING_UNICODE:
                     return length;
                 case CastType.INT64:
-                default:
                     return 8;
+                case CastType.NOP:
+                default:
+                    return 0;
             }
         }
 
@@ -92,6 +94,9 @@ namespace HexProcessor
                 case "byte_array":
                     castType = CastType.BYTE_ARRAY;
                     break;
+                case "NOP":
+                    castType = CastType.NOP;
+                    break;
             }
         }
 
@@ -112,8 +117,11 @@ namespace HexProcessor
             return s.ToString();
         }
 
-        public override string ToString()
+        public string ToString(Endianness endian)
         {
+            if (endian == Endianness.LITTLE)
+                hexString = String.Join(" ", HexConverter.SwapByteEndianness(hexArray));
+
             string res = "";
             try
             {
@@ -139,6 +147,10 @@ namespace HexProcessor
                         break;
                     case CastType.BYTE_ARRAY:
                         res += ToHexString(HexConverter.GetByteArray(hexString));
+                        break;
+                    case CastType.NOP:
+                    default:
+                        res += "";
                         break;
                 }
             }

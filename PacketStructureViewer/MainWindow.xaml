@@ -13,7 +13,7 @@
             <ColumnDefinition Width="358*"/>
         </Grid.ColumnDefinitions>
         <TextBox x:Name="hexBox" HorizontalAlignment="Left" Margin="10,27,0,38" TextWrapping="Wrap" Text="55 26 01 66 15 82 0C 00 00 00 00 1E 27 21 57 00" Width="142" VerticalContentAlignment="Stretch" Padding="0,0,0,-3" Grid.ColumnSpan="2"/>
-        <Button x:Name="Process" Content="Process" Click="button_Click" Grid.ColumnSpan="2" Margin="72,0,249,7" VerticalAlignment="Bottom" Height="26"/>
+        <Button x:Name="Process" Content="Process" Click="button_Click" Grid.ColumnSpan="2" Margin="10,0,0,7" VerticalAlignment="Bottom" Height="26" HorizontalAlignment="Left" Width="142"/>
         <ListView x:Name="listView" Margin="181,27,10,7" Padding="0" Grid.Column="1" Grid.ColumnSpan="2">
             <ListView.View>
                 <GridView>
@@ -27,13 +27,15 @@
                 <DataGridTextColumn Header="Value" Binding="{Binding Length}" />
             </DataGrid.Columns>
         </DataGrid>
-        <Button x:Name="button" Content="Endian" Margin="10,0,0,7" Width="57" Click="button_SwitchEndian" VerticalContentAlignment="Center" HorizontalAlignment="Left" Height="26" VerticalAlignment="Bottom"/>
         <DockPanel>
             <Menu DockPanel.Dock="Top" Margin="0,0,-651,0" VerticalAlignment="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_New" Click ="NewFile_button" />
                     <MenuItem Header="_Open" Click="OpenFile_button" />
                     <MenuItem Header="_Save" Click="SaveFile_button"/>
+                </MenuItem>
+                <MenuItem Header="_Options">
+                    <MenuItem IsCheckable="true" Header="_Swap Endianness" Click ="button_SwitchEndian" />
                 </MenuItem>
             </Menu>
         </DockPanel>

@@ -162,10 +162,11 @@ namespace PacketStructureViewer
 
             foreach (DisplayedType dt in dataGrid.ItemsSource)
             {
-                list.Add(dt);
+                if(dt.Type != null)
+                    list.Add(dt);
             }
 
-            processor.ProcessString(hexBox.Text, list, endian);
+            processor.ProcessString(hexBox.Text, list);
 
             listView.Items.Clear();
             List<HexChunk> resultList = processor.GetResult();
@@ -173,7 +174,7 @@ namespace PacketStructureViewer
                 this.listView.Items.Add(new DisplayedChunk
                 {
                     Type = chunk.CastTypeString,
-                    Value = chunk.ToString(),
+                    Value = chunk.ToString(endian),
                     Hex = chunk.HexString
                 });
         }
