@@ -11,14 +11,14 @@
         <Button x:Name="refreshButton" HorizontalAlignment="Left" Margin="72,0,0,7" Width="80" Height="21" HorizontalContentAlignment="Center" VerticalAlignment="Bottom">
             <Button x:Name="Process" Content="Process" Width="75" Click="button_Click"/>
         </Button>
-        <ListView x:Name="listView" Margin="266,10,7,7" Padding="0">
+        <ListView x:Name="listView" Margin="261,10,7,7" Padding="0">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="157,10,0,7" Width="104" AutoGenerateColumns="False" FrozenColumnCount="2" SelectionMode="Single" SelectionUnit="Cell" MinRowHeight="6">
+        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="157,10,0,7" Width="99" AutoGenerateColumns="False" FrozenColumnCount="2" SelectionMode="Single" SelectionUnit="Cell" MinRowHeight="6">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Type}" />
                 <DataGridTextColumn Header="Birthday" Binding="{Binding Length}" />

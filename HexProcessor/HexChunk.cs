@@ -86,6 +86,23 @@ namespace HexProcessor
             }
         }
 
+        private string ToHexString(byte[] hex)
+        {
+            if (hex == null) return null;
+            if (hex.Length == 0) return string.Empty;
+
+            var s = new StringBuilder();
+            s.Append("[");
+            foreach (byte b in hex)
+            {
+                s.Append(b.ToString());
+                s.Append(",");
+            }
+            s.Remove(s.Length - 1, 1);
+            s.Append("]");
+            return s.ToString();
+        }
+
         public override string ToString()
         {
             string res = "";
@@ -112,7 +129,7 @@ namespace HexProcessor
                         res += HexConverter.GetStringUNICODE(hexString);
                         break;
                     case CastType.BYTE_ARRAY:
-                        res += HexConverter.GetByteArray(hexString);
+                        res += ToHexString(HexConverter.GetByteArray(hexString));
                         break;
                 }
             }

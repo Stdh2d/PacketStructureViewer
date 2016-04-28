@@ -42,13 +42,13 @@ namespace HexProcessor
         public static string GetStringASCII(string s)
         {
             ASCIIEncoding encoding = new ASCIIEncoding();
-            return encoding.GetChars(GetByteArray(s)).ToString();
+            return new String(encoding.GetChars(GetByteArray(s)));
         }
 
         public static string GetStringUNICODE(string s)
         {
             UnicodeEncoding encoding = new UnicodeEncoding();
-            return encoding.GetChars(GetByteArray(s)).ToString();
+            return new String(encoding.GetChars(GetByteArray(s)));
         }
     }
 }
