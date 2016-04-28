@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace HexProcessor
 {
     public class HexChunk
     {
-        private CastType castType;
+        public CastType castType;
+
+        [JsonIgnore]
         public string CastTypeString
         {
             get { return castType.ToString(); }
@@ -18,16 +21,21 @@ namespace HexProcessor
         public string HexString
         {
             get { return String.Join(" ", hexArray); }
+            set { hexArray = value.Split(' '); }
         }
 
         private string[] hexArray;
         private int length;
-
+        
         public int Size
         {
             get
             {
                 return ByteSizeOfType(castType);
+            }
+            set
+            {
+                length = value;
             }
         }
 
@@ -60,6 +68,7 @@ namespace HexProcessor
         public void SetType(string type, int length = 0)
         {
             this.length = length;
+            type = type.ToLower();
             switch (type)
             {
                 case "byte":

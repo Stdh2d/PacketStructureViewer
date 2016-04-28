@@ -29,14 +29,16 @@ namespace PacketStructureViewer
             public string Hex { get; set; }
         }
 
-
+        private string currentFilePath;
         private bool switchEndian = false;
         private Endianness endian;
+        Processor processor = new Processor();
 
         public MainWindow()
         {
             InitializeComponent();
             endian = Endianness.BIG;
+            currentFilePath = "";
 
             var gridView = new GridView();
             this.listView.View = gridView;
@@ -57,10 +59,7 @@ namespace PacketStructureViewer
             });
 
             List<DisplayedType> types = new List<DisplayedType>();
-            DisplayedType dt = new DisplayedType();
-            dt.Type = "int16";
-            types.Add(dt);
-
+            types.Add(new DisplayedType());
             dataGrid.ItemsSource = types;
         }
 
@@ -90,9 +89,75 @@ namespace PacketStructureViewer
             processData();
         }
 
-        private void processData()
+        private void OpenFile_button(object sender, RoutedEventArgs e)
         {
-            Processor processor = new Processor();
+            string hex = "";
+            SaveManager.Load(ref hex, ref processor);
+            hexBox.Text = hex;
+            List<HexChunk> chunks = processor.GetResult();
+            List<DisplayedType> types = new List<DisplayedType>();
+            
+            foreach (HexChunk chunk in chunks)
+            {
+                DisplayedType dt = new DisplayedType();
+                dt.Type = chunk.CastTypeString;
+                dt.Length = chunk.Size;
+                types.Add(dt);
+            }
+
+            dataGrid.ItemsSource = types;
+        }
+
+        private void SaveFile_button(object sender, RoutedEventArgs e)
+        {
+            processData();
+            if (currentFilePath == "")
+            {
+                SaveAsFile_button(sender, e);
+            }
+            else
+            {
+                SaveManager.Save(hexBox.Text, processor);
+            }
+        }
+        
+        private void SaveAsFile_button(object sender, RoutedEventArgs e)
+        {
+            SaveManager.Save(hexBox.Text, processor);
+        }
+
+        private void NewFile_button(object sender, RoutedEventArgs e)
+        {
+            currentFilePath = "";
+            hexBox.Text = "";
+            dataGrid.Items.Clear();
+            listView.Items.Clear();
+        }
+
+        private string browseFiles()
+        {
+            // Create OpenFileDialog 
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            
+            // Set filter for file extension and default file extension 
+            dlg.DefaultExt = ".json";
+            dlg.Filter = "JSON Files (*.json)|*.json";
+
+            // Display OpenFileDialog by calling ShowDialog method 
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Get the selected file name and display in a TextBox 
+            if (result == true)
+            {
+                // Open document 
+                return dlg.FileName;
+            }
+            return "";
+        }
+
+        private void processData(bool reset = true)
+        {
+            processor.Reset();
             List<DisplayedType> list = new List<DisplayedType>();
 
             foreach (DisplayedType dt in dataGrid.ItemsSource)

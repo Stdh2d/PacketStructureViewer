@@ -61,6 +61,10 @@ namespace HexProcessor
                 HexChunk hc = new HexChunk();
                 hc.SetType(dt.Type, dt.Length);
                 int chunkSize = hc.Size;
+
+                if (bytes.Length < chunkSize)
+                    return;
+
                 hc.processChunk(bytes.SubArray(0, chunkSize));
                 bytes = bytes.SubArray(chunkSize, bytes.Length - chunkSize);
                 chunkList.Add(hc);
@@ -70,6 +74,16 @@ namespace HexProcessor
         public List<HexChunk> GetResult()
         {
             return chunkList;
+        }
+
+        public void SetChunks(List<HexChunk> chunks)
+        {
+            chunkList = chunks;
+        }
+
+        public void Reset()
+        {
+            chunkList.Clear();
         }
     }
 }
