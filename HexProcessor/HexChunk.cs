@@ -39,6 +39,25 @@ namespace HexProcessor
             }
         }
 
+        public static int ByteSizeOfTypeStringed(string s)
+        {
+            switch (s)
+            {
+                case "byte":
+                    return 1;
+                case "int16":
+                    return 2;
+                case "int32":
+                    return 4;
+                    break;
+                case "int64":
+                    return 8;
+                case "NOP":
+                default:
+                    return 0;
+            }
+        }
+
         int ByteSizeOfType(CastType type)
         {
             switch (type)
@@ -120,7 +139,7 @@ namespace HexProcessor
         public string ToString(Endianness endian)
         {
             if (endian == Endianness.LITTLE)
-                hexString = String.Join(" ", HexConverter.SwapByteEndianness(hexArray));
+                hexString = String.Join("", HexConverter.SwapByteEndianness(hexArray));
 
             string res = "";
             try

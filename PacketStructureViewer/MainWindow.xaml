@@ -21,10 +21,16 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="16,27,0,7" Width="160" AutoGenerateColumns="False" FrozenColumnCount="2" SelectionMode="Single" SelectionUnit="Cell" MinRowHeight="6" MinColumnWidth="85" Grid.Column="1" CanUserReorderColumns="False" CanUserSortColumns="False">
+        <DataGrid DataGridCell.Selected="DataGrid_GotFocus" x:Name="dataGrid" HorizontalAlignment="Left" Margin="16,27,0,7" Width="160" AutoGenerateColumns="False" FrozenColumnCount="2" SelectionMode="Single" SelectionUnit="Cell" MinRowHeight="6" MinColumnWidth="85" Grid.Column="1" CanUserReorderColumns="False" CanUserSortColumns="False" KeyDown="onKeyDown">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Type" Binding="{Binding Type}" />
-                <DataGridTextColumn Header="Value" Binding="{Binding Length}" />
+                <DataGridComboBoxColumn x:Name="typeComboBox" Header="Type" SelectedItemBinding="{Binding Type}">
+                    <DataGridComboBoxColumn.EditingElementStyle>
+                        <Style TargetType="{x:Type ComboBox}">
+                            <EventSetter Event="SelectionChanged" Handler="SomeSelectionChanged" />
+                        </Style>
+                    </DataGridComboBoxColumn.EditingElementStyle>
+                </DataGridComboBoxColumn>
+                <DataGridTextColumn Header="Length" Binding="{Binding Length}" />
             </DataGrid.Columns>
         </DataGrid>
         <DockPanel>
