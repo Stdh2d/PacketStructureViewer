@@ -44,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisplayedChunk.cs" />
+    <Compile Include="DisplayedType.cs" />
     <Compile Include="HexChunk.cs" />
     <Compile Include="HexConverter.cs" />
     <Compile Include="Processor.cs" />

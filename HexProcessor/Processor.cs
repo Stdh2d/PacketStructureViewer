@@ -24,12 +24,6 @@ namespace HexProcessor
         LITTLE
     }
 
-    public class DisplayedType
-    {
-        public string Type { get; set; }
-        public int Length { get; set; }
-    }
-
     public class Processor
     {
         private List<HexChunk> chunkList;

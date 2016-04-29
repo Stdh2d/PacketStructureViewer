@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HexProcessor;
 using System.Collections.ObjectModel;
+using System.Windows.Controls.Primitives;
 
 namespace PacketStructureViewer
 {
@@ -23,14 +24,6 @@ namespace PacketStructureViewer
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        public class DisplayedChunk
-        {
-            public string Type { get; set; }
-            public string Value { get; set; }
-            public string Hex { get; set; }
-        }
-
         private string currentFilePath;
         private bool switchEndian = false;
         private Endianness endian;
@@ -185,15 +178,20 @@ namespace PacketStructureViewer
                 });
         }
 
-        private void updateEditableCell()
+        private void updateEditableCell(SelectionChangedEventArgs e)
         {
+            if (e.AddedItems.Count == 0)
+                return;
+            string value = "";
+            string selectedValue = (string)e.AddedItems[0];
             var rows = GetDataGridRows(dataGrid);
             foreach (DataGridRow r in rows)
             {
-                DisplayedType dt = (DisplayedType)r.Item;
-                if (dt.Type != "byte_array" && dt.Type != "string_unicode" && dt.Type != "string_ascii")
+                value = (dataGrid.Columns[0].GetCellContent(r) as ComboBox).Text;
+                value = (value == "" ? selectedValue : value);
+                if (value != "byte_array" && value != "string_unicode" && value != "string_ascii")
                 {
-                    if(dt.Type != null)
+                    if(value != null)
                     {
                         dataGrid.Columns[1].IsReadOnly = true;
                         (dataGrid.Columns[1].GetCellContent(r).Parent as DataGridCell).Background = Brushes.LightGray;
@@ -209,9 +207,24 @@ namespace PacketStructureViewer
             dataGrid.CommitEdit();
         }
 
-        private void onKeyDown(object sender, KeyEventArgs e)
+        private T GetFirstChildByType<T>(DependencyObject prop) where T : DependencyObject
         {
-            updateEditableCell();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(prop); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild((prop), i) as DependencyObject;
+                if (child == null)
+                    continue;
+
+                T castedProp = child as T;
+                if (castedProp != null)
+                    return castedProp;
+
+                castedProp = GetFirstChildByType<T>(child);
+
+                if (castedProp != null)
+                    return castedProp;
+            }
+            return null;
         }
 
         private void DataGrid_GotFocus(object sender, RoutedEventArgs e)
@@ -222,12 +235,69 @@ namespace PacketStructureViewer
                 // Starts the Edit on the row;
                 DataGrid grd = (DataGrid)sender;
                 grd.BeginEdit(e);
+
+                Control control = GetFirstChildByType<Control>(e.OriginalSource as DataGridCell);
+                if (control != null)
+                {
+                    control.Focus();
+                }
             }
         }
-        
+
+        public DataGridRow GetRow(int index)
+        {
+            DataGridRow row = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(index);
+            if (row == null)
+            {
+                dataGrid.UpdateLayout();
+                dataGrid.ScrollIntoView(dataGrid.Items[index]);
+                row = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(index);
+            }
+            return row;
+        }
+
+        public static T GetVisualChild<T>(Visual parent) where T : Visual
+        {
+            T child = default(T);
+            int numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < numVisuals; i++)
+            {
+                Visual v = (Visual)VisualTreeHelper.GetChild(parent, i);
+                child = v as T;
+                if (child == null)
+                {
+                    child = GetVisualChild<T>(v);
+                }
+                if (child != null)
+                {
+                    break;
+                }
+            }
+            return child;
+        }
+
+        public DataGridCell GetCell(int row, int column)
+        {
+            DataGridRow rowContainer = GetRow(row);
+
+            if (rowContainer != null)
+            {
+                DataGridCellsPresenter presenter = GetVisualChild<DataGridCellsPresenter>(rowContainer);
+
+                DataGridCell cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
+                if (cell == null)
+                {
+                    dataGrid.ScrollIntoView(rowContainer, dataGrid.Columns[column]);
+                    cell = (DataGridCell)presenter.ItemContainerGenerator.ContainerFromIndex(column);
+                }
+                return cell;
+            }
+            return null;
+        }
+
         private void SomeSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            updateEditableCell();
+            updateEditableCell(e);
         }
     }
 }
